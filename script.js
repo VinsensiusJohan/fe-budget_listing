@@ -1,4 +1,18 @@
-const API_BASE = "https://budget-listing.onrender.com"; 
+const API_BASE = "https://budget-listing.onrender.com";
+
+function showNotification(message, type = "info") {
+  const notif = document.createElement("div");
+  notif.className = `notif ${type}`;
+  notif.textContent = message;
+
+  document.body.appendChild(notif);
+
+  setTimeout(() => notif.classList.add("show"), 100);
+  setTimeout(() => {
+    notif.classList.remove("show");
+    setTimeout(() => document.body.removeChild(notif), 500);
+  }, 3000);
+}
 
 function login() {
   const email = document.getElementById("email").value;
@@ -15,7 +29,7 @@ function login() {
         localStorage.setItem("token", data.token);
         window.location.href = "dashboard.html";
       } else {
-        alert("Login gagal!");
+        showNotification("Login gagal!", "error");
       }
     });
 }
@@ -31,9 +45,9 @@ function register() {
     body: JSON.stringify({ name, email, password })
   }).then(res => {
     if (res.status === 201) {
-      alert("Registrasi sukses, silakan login.");
+      showNotification("Registrasi sukses, silakan login.", "success");
     } else {
-      alert("Registrasi gagal.");
+      showNotification("Registrasi gagal.", "error");
     }
   });
 }
@@ -97,12 +111,12 @@ function simpanTransaksi() {
     body: JSON.stringify(payload)
   }).then(res => {
     if (res.ok) {
-      alert(id ? "Transaksi diupdate." : "Transaksi ditambahkan.");
+      showNotification(id ? "Transaksi diupdate." : "Transaksi ditambahkan.", "success");
       clearForm();
       loadTransaksi();
       loadSummary();
     } else {
-      alert("Gagal menyimpan.");
+      showNotification("Gagal menyimpan.", "error");
     }
   });
 }
@@ -116,11 +130,11 @@ function hapusTransaksi(id) {
     }
   }).then(res => {
     if (res.ok) {
-      alert("Transaksi dihapus.");
+      showNotification("Transaksi dihapus.", "success");
       loadTransaksi();
       loadSummary();
     } else {
-      alert("Gagal menghapus.");
+      showNotification("Gagal menghapus.", "error");
     }
   });
 }
@@ -143,16 +157,6 @@ function clearForm() {
   document.getElementById("desc").value = "";
 }
 
-document.getElementById("logout-btn").addEventListener("click", function () {
-  localStorage.removeItem("token");
-  window.location.href = "index.html";
-});
-
-if (window.location.pathname.includes("dashboard")) {
-  loadTransaksi();
-  loadSummary();
-}
-
 function logout() {
   localStorage.removeItem("token");  
   window.location.href = "index.html";  
@@ -162,5 +166,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const logoutBtn = document.getElementById("logout-btn");
   if (logoutBtn) {
     logoutBtn.addEventListener("click", logout);
+  }
+
+  if (window.location.pathname.includes("dashboard")) {
+    loadTransaksi();
+    loadSummary();
   }
 });

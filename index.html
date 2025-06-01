@@ -1,15 +1,49 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>BudgetLite - Login</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+  .notif {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #444;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+    z-index: 9999;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+
+  .notif.success { background: #4caf50; }
+  .notif.error { background: #f44336; }
+  .notif.info { background: #2196f3; }
+
+  .notif.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
 </head>
-<body>
-  <h1>Login</h1>
-<input type="text" id="name" placeholder="Name" required />
-<input type="email" id="email" placeholder="Email" required />
-<input type="password" id="password" placeholder="Password" required />
-  <button onclick="login()">Login</button>
-  <button onclick="register()">Register</button>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  <div class="bg-white p-8 rounded shadow-md w-full max-w-sm">
+    <h1 class="text-2xl font-bold mb-6 text-center text-blue-600">BudgetLite</h1>
+    
+    <input type="text" id="name" placeholder="Nama" class="w-full mb-3 p-2 border rounded" />
+    <input type="email" id="email" placeholder="Email" class="w-full mb-3 p-2 border rounded" />
+    <input type="password" id="password" placeholder="Password" class="w-full mb-4 p-2 border rounded" />
+    
+    <div class="flex gap-2">
+      <button onclick="login()" class="bg-blue-500 text-white px-4 py-2 rounded w-1/2 hover:bg-blue-600">Login</button>
+      <button onclick="register()" class="bg-gray-300 text-black px-4 py-2 rounded w-1/2 hover:bg-gray-400">Register</button>
+    </div>
+  </div>
 
   <script src="script.js"></script>
 </body>

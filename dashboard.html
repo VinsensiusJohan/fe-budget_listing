@@ -1,24 +1,68 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-  <title>Dashboard</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard - BudgetLite</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+  .notif {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #444;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+    z-index: 9999;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+
+  .notif.success { background: #4caf50; }
+  .notif.error { background: #f44336; }
+  .notif.info { background: #2196f3; }
+
+  .notif.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
 </head>
-<body>
-  <h1>Transaksi Saya</h1>
-  <button id="logout-btn">Logout</button>
+<body class="bg-gray-100 min-h-screen px-4 py-6">
 
-  <h3 id="summary">Loading summary...</h3>
+  <div class="max-w-3xl mx-auto">
+    <div class="flex justify-between items-center mb-4">
+      <h1 class="text-2xl font-bold text-blue-600">📊 Transaksi Saya</h1>
+      <button id="logout-btn" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Logout</button>
+    </div>
 
-  <div id="transaksi-list"></div>
+    <div class="bg-white p-4 rounded shadow mb-6">
+      <h3 id="summary" class="text-lg font-medium text-gray-700">Memuat ringkasan...</h3>
+    </div>
 
-  <h2>Tambah / Edit Transaksi</h2>
-  <input id="id" type="hidden">
-  <input id="amount" placeholder="Jumlah" type="number"><br>
-  <input id="type" placeholder="Tipe (income/expense)"><br>
-  <input id="category" placeholder="Kategori"><br>
-  <input id="date" type="date"><br>
-  <input id="desc" placeholder="Deskripsi"><br>
-  <button onclick="simpanTransaksi()">Simpan</button>
+    <div class="bg-white p-4 rounded shadow mb-6">
+      <h2 class="text-xl font-semibold mb-4">Tambah / Edit Transaksi</h2>
+      <input id="id" type="hidden">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <input id="amount" type="number" placeholder="Jumlah" class="p-2 border rounded" />
+        <input id="type" placeholder="Tipe (income/expense)" class="p-2 border rounded" />
+        <input id="category" placeholder="Kategori" class="p-2 border rounded" />
+        <input id="date" type="date" class="p-2 border rounded" />
+        <input id="desc" placeholder="Deskripsi" class="p-2 border rounded sm:col-span-2" />
+      </div>
+      <button onclick="simpanTransaksi()" class="mt-4 bg-green-500 text-white px-6 py-2 rounded hover:bg-green-600">💾 Simpan</button>
+    </div>
+
+    <div class="bg-white p-4 rounded shadow">
+      <h2 class="text-xl font-semibold mb-4">Riwayat Transaksi</h2>
+      <div id="transaksi-list" class="space-y-2 text-gray-700">
+        <!-- Transaksi akan ditampilkan di sini -->
+      </div>
+    </div>
+  </div>
 
   <script src="script.js"></script>
 </body>
