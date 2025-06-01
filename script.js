@@ -1,4 +1,4 @@
-const API_BASE = "https://budgetlite-api.onrender.com"; // sesuaikan jika URL berbeda
+const API_BASE = "https://budget-listing.onrender.com"; 
 
 function login() {
   const email = document.getElementById("email").value;
@@ -78,7 +78,6 @@ function tambahTransaksi() {
   });
 }
 
-// Auto load jika di dashboard
 if (window.location.pathname.includes("dashboard")) {
   loadTransaksi();
 }
