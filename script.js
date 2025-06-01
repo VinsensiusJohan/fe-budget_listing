@@ -4,7 +4,7 @@ function login() {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
-  fetch(`${API_BASE}/login`, {
+  fetch(`${API_BASE}/api/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password })
@@ -24,7 +24,7 @@ function register() {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
-  fetch(`${API_BASE}/register`, {
+  fetch(`${API_BASE}/api/register`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password })
@@ -38,7 +38,7 @@ function register() {
 }
 
 function loadTransaksi() {
-  fetch(`${API_BASE}/transactions`, {
+  fetch(`${API_BASE}/api/transactions`, {
     headers: {
       Authorization: "Bearer " + localStorage.getItem("token")
     }
@@ -61,7 +61,7 @@ function tambahTransaksi() {
     description: document.getElementById("desc").value
   };
 
-  fetch(`${API_BASE}/transactions`, {
+  fetch(`${API_BASE}/api/transactions`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
