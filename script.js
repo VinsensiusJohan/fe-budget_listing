@@ -1,19 +1,5 @@
 const API_BASE = "https://budget-listing.onrender.com";
 
-function showNotification(message, type = "info") {
-  const notif = document.createElement("div");
-  notif.className = `notif ${type}`;
-  notif.textContent = message;
-
-  document.body.appendChild(notif);
-
-  setTimeout(() => notif.classList.add("show"), 100);
-  setTimeout(() => {
-    notif.classList.remove("show");
-    setTimeout(() => document.body.removeChild(notif), 500);
-  }, 3000);
-}
-
 function login() {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
@@ -29,7 +15,7 @@ function login() {
         localStorage.setItem("token", data.token);
         window.location.href = "dashboard.html";
       } else {
-        showNotification("Login gagal!", "error");
+        Swal.fire("Gagal", "Login gagal!", "error");
       }
     });
 }
@@ -45,9 +31,9 @@ function register() {
     body: JSON.stringify({ name, email, password })
   }).then(res => {
     if (res.status === 201) {
-      showNotification("Registrasi sukses, silakan login.", "success");
+      Swal.fire("Berhasil", "Registrasi sukses, silakan login.", "success");
     } else {
-      showNotification("Registrasi gagal.", "error");
+      Swal.fire("Gagal", "Registrasi gagal.", "error");
     }
   });
 }
@@ -111,30 +97,40 @@ function simpanTransaksi() {
     body: JSON.stringify(payload)
   }).then(res => {
     if (res.ok) {
-      showNotification(id ? "Transaksi diupdate." : "Transaksi ditambahkan.", "success");
+      Swal.fire("Sukses", id ? "Transaksi diperbarui." : "Transaksi ditambahkan.", "success");
       clearForm();
       loadTransaksi();
       loadSummary();
     } else {
-      showNotification("Gagal menyimpan.", "error");
+      Swal.fire("Gagal", "Gagal menyimpan transaksi.", "error");
     }
   });
 }
 
 function hapusTransaksi(id) {
-  if (!confirm("Yakin ingin menghapus transaksi ini?")) return;
-  fetch(`${API_BASE}/api/transactions/${id}`, {
-    method: "DELETE",
-    headers: {
-      Authorization: "Bearer " + localStorage.getItem("token")
-    }
-  }).then(res => {
-    if (res.ok) {
-      showNotification("Transaksi dihapus.", "success");
-      loadTransaksi();
-      loadSummary();
-    } else {
-      showNotification("Gagal menghapus.", "error");
+  Swal.fire({
+    title: "Yakin hapus transaksi ini?",
+    text: "Tindakan ini tidak bisa dibatalkan!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Ya, hapus!",
+    cancelButtonText: "Batal"
+  }).then(result => {
+    if (result.isConfirmed) {
+      fetch(`${API_BASE}/api/transactions/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("token")
+        }
+      }).then(res => {
+        if (res.ok) {
+          Swal.fire("Berhasil", "Transaksi dihapus.", "success");
+          loadTransaksi();
+          loadSummary();
+        } else {
+          Swal.fire("Gagal", "Gagal menghapus transaksi.", "error");
+        }
+      });
     }
   });
 }
@@ -158,8 +154,8 @@ function clearForm() {
 }
 
 function logout() {
-  localStorage.removeItem("token");  
-  window.location.href = "index.html";  
+  localStorage.removeItem("token");
+  window.location.href = "index.html";
 }
 
 document.addEventListener("DOMContentLoaded", () => {

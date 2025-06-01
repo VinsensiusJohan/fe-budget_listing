@@ -5,31 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>BudgetLite - Login</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-  .notif {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: #444;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 8px;
-    opacity: 0;
-    transform: translateY(20px);
-    transition: all 0.3s ease;
-    z-index: 9999;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-  }
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-  .notif.success { background: #4caf50; }
-  .notif.error { background: #f44336; }
-  .notif.info { background: #2196f3; }
-
-  .notif.show {
-    opacity: 1;
-    transform: translateY(0);
-  }
-</style>
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
   <div class="bg-white p-8 rounded shadow-md w-full max-w-sm">
