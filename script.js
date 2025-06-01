@@ -12,7 +12,7 @@ function login() {
     .then(res => res.json())
     .then(data => {
       if (data.token) {
-        localStorage.setItem("token", data.access_token);
+        localStorage.setItem("token", data.token);
         window.location.href = "dashboard.html";
       } else {
         alert("Login gagal!");
