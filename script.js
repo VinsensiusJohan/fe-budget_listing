@@ -38,7 +38,6 @@ function register() {
   });
 }
 
-
 function loadTransaksi() {
   fetch(`${API_BASE}/api/transactions`, {
     headers: {
@@ -49,12 +48,33 @@ function loadTransaksi() {
     .then(data => {
       const div = document.getElementById("transaksi-list");
       div.innerHTML = data.transactions.map(t => `
-        <p><strong>${t.category}</strong> - ${t.type} - ${t.amount} - ${t.date}</p>
+        <p>
+          <strong>${t.category}</strong> - ${t.type} - ${t.amount} - ${t.date}<br>
+          <button onclick="isiForm(${t.id}, '${t.type}', '${t.category}', ${t.amount}, '${t.date}', '${t.note || ''}')">Edit</button>
+          <button onclick="hapusTransaksi(${t.id})">Hapus</button>
+        </p>
       `).join("");
     });
 }
 
-function tambahTransaksi() {
+function loadSummary() {
+  fetch(`${API_BASE}/api/transactions/summary`, {
+    headers: {
+      Authorization: "Bearer " + localStorage.getItem("token")
+    }
+  })
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById("summary").innerText = `
+        Pemasukan: ${data.income_total} | 
+        Pengeluaran: ${data.expense_total} | 
+        Saldo: ${data.balance}
+      `;
+    });
+}
+
+function simpanTransaksi() {
+  const id = document.getElementById("id").value;
   const payload = {
     amount: parseFloat(document.getElementById("amount").value),
     type: document.getElementById("type").value,
@@ -63,25 +83,74 @@ function tambahTransaksi() {
     note: document.getElementById("desc").value
   };
 
-  fetch(`${API_BASE}/api/transactions`, {
-    method: "POST",
+  const method = id ? "PUT" : "POST";
+  const url = id
+    ? `${API_BASE}/api/transactions/${id}`
+    : `${API_BASE}/api/transactions`;
+
+  fetch(url, {
+    method,
     headers: {
       "Content-Type": "application/json",
       Authorization: "Bearer " + localStorage.getItem("token")
     },
     body: JSON.stringify(payload)
   }).then(res => {
-    if (res.status === 201) {
-      alert("Transaksi ditambahkan.");
+    if (res.ok) {
+      alert(id ? "Transaksi diupdate." : "Transaksi ditambahkan.");
+      clearForm();
       loadTransaksi();
+      loadSummary();
     } else {
-      alert("Gagal menambahkan.");
+      alert("Gagal menyimpan.");
     }
   });
 }
 
+function hapusTransaksi(id) {
+  if (!confirm("Yakin ingin menghapus transaksi ini?")) return;
+  fetch(`${API_BASE}/api/transactions/${id}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: "Bearer " + localStorage.getItem("token")
+    }
+  }).then(res => {
+    if (res.ok) {
+      alert("Transaksi dihapus.");
+      loadTransaksi();
+      loadSummary();
+    } else {
+      alert("Gagal menghapus.");
+    }
+  });
+}
+
+function isiForm(id, type, category, amount, date, note) {
+  document.getElementById("id").value = id;
+  document.getElementById("amount").value = amount;
+  document.getElementById("type").value = type;
+  document.getElementById("category").value = category;
+  document.getElementById("date").value = date;
+  document.getElementById("desc").value = note;
+}
+
+function clearForm() {
+  document.getElementById("id").value = "";
+  document.getElementById("amount").value = "";
+  document.getElementById("type").value = "";
+  document.getElementById("category").value = "";
+  document.getElementById("date").value = "";
+  document.getElementById("desc").value = "";
+}
+
+document.getElementById("logout-btn").addEventListener("click", function () {
+  localStorage.removeItem("token");
+  window.location.href = "index.html";
+});
+
 if (window.location.pathname.includes("dashboard")) {
   loadTransaksi();
+  loadSummary();
 }
 
 function logout() {
