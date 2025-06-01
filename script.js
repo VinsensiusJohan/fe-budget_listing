@@ -48,7 +48,7 @@ function loadTransaksi() {
     .then(res => res.json())
     .then(data => {
       const div = document.getElementById("transaksi-list");
-      div.innerHTML = data.map(t => `
+      div.innerHTML = data.transactions.map(t => `
         <p><strong>${t.category}</strong> - ${t.type} - ${t.amount} - ${t.date}</p>
       `).join("");
     });
