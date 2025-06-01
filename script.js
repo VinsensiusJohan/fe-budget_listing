@@ -80,7 +80,18 @@ function tambahTransaksi() {
   });
 }
 
-
 if (window.location.pathname.includes("dashboard")) {
   loadTransaksi();
 }
+
+function logout() {
+  localStorage.removeItem("token");  
+  window.location.href = "index.html";  
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const logoutBtn = document.getElementById("logout-btn");
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", logout);
+  }
+});
