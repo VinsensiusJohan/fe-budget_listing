@@ -21,13 +21,14 @@ function login() {
 }
 
 function register() {
+  const name = document.getElementById("name").value;
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
   fetch(`${API_BASE}/api/register`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password })
+    body: JSON.stringify({ name, email, password })
   }).then(res => {
     if (res.status === 201) {
       alert("Registrasi sukses, silakan login.");
@@ -36,6 +37,7 @@ function register() {
     }
   });
 }
+
 
 function loadTransaksi() {
   fetch(`${API_BASE}/api/transactions`, {
@@ -58,7 +60,7 @@ function tambahTransaksi() {
     type: document.getElementById("type").value,
     category: document.getElementById("category").value,
     date: document.getElementById("date").value,
-    description: document.getElementById("desc").value
+    note: document.getElementById("desc").value
   };
 
   fetch(`${API_BASE}/api/transactions`, {
@@ -77,6 +79,7 @@ function tambahTransaksi() {
     }
   });
 }
+
 
 if (window.location.pathname.includes("dashboard")) {
   loadTransaksi();
