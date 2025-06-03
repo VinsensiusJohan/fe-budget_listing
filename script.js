@@ -1,42 +1,53 @@
 const API_BASE = "https://budget-listing.onrender.com";
 
 function login() {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
 
   fetch(`${API_BASE}/api/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password })
   })
-    .then(res => res.json())
-    .then(data => {
-      if (data.token) {
-        localStorage.setItem("token", data.token);
-        window.location.href = "dashboard.html";
+    .then(res => res.json().then(data => ({ status: res.status, body: data })))
+    .then(({ status, body }) => {
+      if (status === 200 && body.token) {
+        localStorage.setItem("token", body.token);
+        Swal.fire("Berhasil", body.message || "Login berhasil!", "success").then(() => {
+          window.location.href = "dashboard.html";
+        });
       } else {
-        Swal.fire("Gagal", "Login gagal!", "error");
+        Swal.fire("Gagal", body.message || "Login gagal!", "error");
       }
+    })
+    .catch(() => {
+      Swal.fire("Error", "Terjadi kesalahan saat login.", "error");
     });
 }
 
 function register() {
-  const name = document.getElementById("name").value;
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+  const name = document.getElementById("name").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
 
   fetch(`${API_BASE}/api/register`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ name, email, password })
-  }).then(res => {
-    if (res.status === 201) {
-      Swal.fire("Berhasil", "Registrasi sukses, silakan login.", "success");
-    } else {
-      Swal.fire("Gagal", "Registrasi gagal.", "error");
-    }
-  });
+  })
+    .then(res => res.json().then(data => ({ status: res.status, body: data })))
+    .then(({ status, body }) => {
+      if (status === 201 && body.token) {
+        Swal.fire("Berhasil", body.message || "Registrasi berhasil!", "success");
+      } else {
+        Swal.fire("Gagal", body.message || "Registrasi gagal.", "error");
+      }
+    })
+    .catch(() => {
+      Swal.fire("Error", "Terjadi kesalahan saat registrasi.", "error");
+    });
 }
+
 
 function loadTransaksi() {
   fetch(`${API_BASE}/api/transactions`, {
@@ -169,3 +180,37 @@ document.addEventListener("DOMContentLoaded", () => {
     loadSummary();
   }
 });
+
+function checkLogin() {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    handleNotLoggedIn();
+    return;
+  }
+
+  fetch(`${API_BASE}/api/me`, {
+    method: 'GET',
+    headers: { Authorization: `Bearer ${token}` }
+  })
+    .then(res => {
+      if (res.status === 200) {
+        if (window.location.pathname.endsWith('index.html') || window.location.pathname === '/' ) {
+          window.location.href = 'dashboard.html';
+        }
+      } else {
+        handleNotLoggedIn();
+      }
+    })
+    .catch(() => {
+      handleNotLoggedIn();
+    });
+}
+
+function handleNotLoggedIn() {
+  if (window.location.pathname.endsWith('dashboard.html')) {
+    window.location.href = 'index.html';
+  }
+}
+
+checkLogin();
+
